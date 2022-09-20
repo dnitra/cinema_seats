@@ -1,11 +1,13 @@
 const container = document.querySelector(".container");
-let nRows = 10;
+const form = document.querySelector("form");
+let nRows = 7;
 let nColumns = 10;
 // nRows++
 // nColumns++
 let random = () => {
   let number = Math.round(Math.random() * 10);
-  if (number <= 8) return "red";
+  if (number <= 6) return "occupied";
+  else return "";
 };
 for (let i = 0; i < nRows * nColumns; i++) {
   container.innerHTML += `<div  class="item ${random()}"><p>${i}</p></div>`;
@@ -19,6 +21,21 @@ const getSeatNumber = (number) => {
   return `${row(number)}${column(number)}`;
 };
 
+container.addEventListener("mouseover", () => {
+    items.forEach((item) => {
+     
+    if (item.classList.contains("occupied")) {
+      item.classList.add("scaled");
+    }
+  });
+});
+container.addEventListener("mouseleave", () => {
+  items.forEach((item) => {
+    if (item.classList.contains("scaled")) {
+      item.classList.remove("scaled");
+    }
+  });
+});
 items.forEach((item) =>
   item.addEventListener("mouseover", (event) => {
     if (!isNaN(event.target.firstChild.textContent[0])) {
@@ -35,14 +52,16 @@ items.forEach((item) =>
     item.target.firstChild.textContent = oldNumber;
   })
 );
-items.forEach(
-  (item) =>
-    (item.onclick = function (event) {
-      console.log(this);
-      if (!this.classList.contains("selected")) {
-        this.classList.add("selected");
-      } else {
-        this.classList.remove("selected");
-      }
+items.forEach((item) => {
+    item.addEventListener("click", function (event) {
+        console.log(this);
+        if (
+            !this.classList.contains("selected") &&
+            !this.classList.contains("occupied")
+        ) {
+            this.classList.add("selected");
+        } else {
+            this.classList.remove("selected");
+        }
     })
-);
+});
