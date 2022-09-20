@@ -1,5 +1,8 @@
 const container = document.querySelector(".container");
 const form = document.querySelector("form");
+const nSeats = document.querySelector(".nSeats");
+const totalPrice = document.querySelector(".totalPrice");
+let countSelectedSeats =0
 let nRows = 7;
 let nColumns = 10;
 // nRows++
@@ -22,8 +25,7 @@ const getSeatNumber = (number) => {
 };
 
 container.addEventListener("mouseover", () => {
-    items.forEach((item) => {
-     
+  items.forEach((item) => {
     if (item.classList.contains("occupied")) {
       item.classList.add("scaled");
     }
@@ -53,15 +55,20 @@ items.forEach((item) =>
   })
 );
 items.forEach((item) => {
-    item.addEventListener("click", function (event) {
-        console.log(this);
-        if (
-            !this.classList.contains("selected") &&
-            !this.classList.contains("occupied")
-        ) {
-            this.classList.add("selected");
-        } else {
-            this.classList.remove("selected");
-        }
-    })
+  item.addEventListener("click", function (event) {
+    console.log(this);
+    if (
+      !this.classList.contains("selected") &&
+      !this.classList.contains("occupied")
+    ) {
+        this.classList.add("selected");
+        countSelectedSeats++
+    }
+    else if (this.classList.contains("selected")) {
+      this.classList.remove("selected");
+      countSelectedSeats--;
+    }
+      nSeats.textContent = countSelectedSeats
+      totalPrice.textContent = `$${(countSelectedSeats*9.9).toFixed(2)}`;
+  });
 });
