@@ -2,9 +2,9 @@ const container = document.querySelector(".container");
 const form = document.querySelector("form");
 const nSeats = document.querySelector(".nSeats");
 const totalPrice = document.querySelector(".totalPrice");
-let countSelectedSeats =0
+let countSelectedSeats = 0;
 let nRows = 7;
-let nColumns = 10;
+let nColumns = 12;
 // nRows++
 // nColumns++
 let random = () => {
@@ -12,17 +12,22 @@ let random = () => {
   if (number <= 6) return "occupied";
   else return "";
 };
-for (let i = 0; i < nRows * nColumns; i++) {
-  container.innerHTML += `<div  class="item ${random()}"><p>${i}</p></div>`;
-}
 
-const items = document.querySelectorAll(".item");
 let oldNumber;
-const column = (number) => number % nColumns;
-const row = (number) => String.fromCharCode(Math.floor(number / nColumns) + 65);
+const column = (number) =>
+  number % nColumns > 0 ? number % nColumns : nColumns;
+const row = (number) =>
+  String.fromCharCode(Math.floor((number - 1) / nColumns) + 65);
 const getSeatNumber = (number) => {
   return `${row(number)}${column(number)}`;
 };
+
+for (let i = 1; i <= nRows * nColumns; i++) {
+ 
+  container.innerHTML += `<div  class="item ${random()}"><p>${getSeatNumber(i)}</p></div>`;
+}
+
+const items = document.querySelectorAll(".item");
 
 container.addEventListener("mouseover", () => {
   items.forEach((item) => {
@@ -38,37 +43,24 @@ container.addEventListener("mouseleave", () => {
     }
   });
 });
-items.forEach((item) =>
-  item.addEventListener("mouseover", (event) => {
-    if (!isNaN(event.target.firstChild.textContent[0])) {
-      oldNumber = event.target.firstChild.textContent;
-    }
-    if (!isNaN(oldNumber[0])) {
-      let number = getSeatNumber(oldNumber);
-      event.target.firstChild.textContent = number;
-    }
-  })
-);
-items.forEach((item) =>
-  item.addEventListener("mouseleave", (item) => {
-    item.target.firstChild.textContent = oldNumber;
-  })
-);
+console.log("width " + container.offsetWidth);
 items.forEach((item) => {
-  item.addEventListener("click", function (event) {
-    console.log(this);
+  item.style.width = `${100 / nColumns}%`;
+  item.style.height = `0px`;
+  item.style.paddingBottom = `${100 / nColumns}%`;
+
+  item.addEventListener("click", function() {
     if (
       !this.classList.contains("selected") &&
       !this.classList.contains("occupied")
     ) {
-        this.classList.add("selected");
-        countSelectedSeats++
-    }
-    else if (this.classList.contains("selected")) {
+      this.classList.add("selected");
+      countSelectedSeats++;
+    } else if (this.classList.contains("selected")) {
       this.classList.remove("selected");
       countSelectedSeats--;
     }
-      nSeats.textContent = countSelectedSeats
-      totalPrice.textContent = `$${(countSelectedSeats*9.9).toFixed(2)}`;
+    nSeats.textContent = countSelectedSeats;
+    totalPrice.textContent = `$${(countSelectedSeats * 9.9).toFixed(2)}`;
   });
 });
